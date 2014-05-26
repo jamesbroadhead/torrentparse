@@ -179,17 +179,36 @@ class TorrentParser(object):
         ''' Parses torrent file and returns details of the files contained in the torrent.
             Details include name, length and checksum for each file in the torrent.
         '''
-        parsed_files_info = []
-        files_info = self.parsed_content.get('info')
-        if files_info: # 'info' should be present in all torrent files. Nevertheless..
-            multiple_files_info = files_info.get('files')
-            if multiple_files_info: # multiple-file torrent
-                for file_info in multiple_files_info:
-                    parsed_files_info.append((os.path.sep.join(file_info.get('path')), file_info.get('length'), ))
-            else: # single file torrent
-                parsed_files_info.append((files_info.get('name'), files_info.get('length'), ))
+        parsed_files_info = {}
 
-        return parsed_files_info
+        # 'info' should be present in all torrent files. Nevertheless..
+        files_info = self.parsed_content.get('info', {})
+
+        # multiple-file torrent
+        multiple_files_info = files_info.get('files', [])
+
+        parsed_files_info.update(
+            { os.path.sep.join(multifile_info.get('path')):
+                multifile_info.get('length')
+              for multifile_info in multiple_files_info })
+
+        # single file torrent
+        if not parsed_files_info:
+            name = files_info.get('name')
+            if name:
+                parsed_files_info[name] = files_info.get('length')
+
+        # some single-file torrents (incorrectly) have their details
+        # in the parsed_content scope (eg. uTorrent/3200)
+        # only use this if no other fields have been present
+        if not parsed_files_info:
+            name = self.parsed_content.get('name')
+            if name:
+                parsed_files_info[name] = self.parsed_content.get('length')
+
+        parsed_files_info_lst = [ (k, v) for k, v in parsed_files_info.items() ]
+
+        return parsed_files_info_lst
 
 
     def _parse_torrent(self):

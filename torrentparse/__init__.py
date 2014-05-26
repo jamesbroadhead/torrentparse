@@ -1,3 +1,8 @@
-__all__ = ['torrentparse']
+from torrentparse import ParsingError,  TorrentParser
 
-from torrentparse import *
+__all__ = [
+    'ParsingError',
+    'torrentparse',
+    'TorrentParser',
+]
+

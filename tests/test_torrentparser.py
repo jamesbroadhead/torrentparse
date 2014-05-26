@@ -59,7 +59,8 @@ class TestTorrentParse(unittest.TestCase):
         import os
         for torrent_file in TORRENTS_INFO:
             tp = TorrentParser(os.path.join(test_data_dir, torrent_file))
-            self.assertItemsEqual(tp.get_files_details(), TORRENTS_INFO[torrent_file]['file_details'])
+            self.assertItemsEqual(tp.get_files_details(),
+                                  TORRENTS_INFO[torrent_file]['file_details'])
 
 if __name__ == "__main__":
     unittest.main()
