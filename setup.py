@@ -3,11 +3,12 @@
 from setuptools import setup
 
 setup(name='torrentparse',
-    version='0.1',
+    version='0.1.0',
     description='torrentparse',
     author='mohanraj-r',
-    author_email='',
-    url='https://github.com/mohanraj-r',
+    author_email='mohanraj.cit@gmail.com',
+    maintainer='James Broadhead',
+    maintainer_email='jamesbroadhead+github@gmail.com',
+    url='https://github.com/jamesbroadhead/torrentparse',
     packages = ['torrentparse'],
-    #package_dir = {'': 'lib'},
 )
