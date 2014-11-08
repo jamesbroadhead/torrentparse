@@ -135,9 +135,6 @@ class TorrentParser(object):
             IOError - when the string arg passed points to a non-existent file
 
         '''
-        if not isinstance(torrent_file_path, types.StringType):
-            raise ValueError('Path of the torrent file expected in string format.')
-
         if not os.path.exists(torrent_file_path):
             raise IOError("No file found at '%s'" % torrent_file_path)
 
