@@ -3,7 +3,7 @@
 from setuptools import setup
 
 setup(name='torrentparse',
-    version='0.1.0',
+    version='0.1.1',
     description='torrentparse',
     author='mohanraj-r',
     author_email='mohanraj.cit@gmail.com',
