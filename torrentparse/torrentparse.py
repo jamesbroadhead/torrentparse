@@ -18,7 +18,6 @@ from glob import glob
 import os
 import string
 import sys
-import types
 
 
 class ParsingError(Exception):
@@ -43,6 +42,9 @@ class TorrentParser(object):
     DICT_LIST_ITEM_SEP = ', '
     INT_START = 'i'
 
+    # If set, consume errors silently
+    liberal = False
+
     class _TorrentStr(object):
         ''' StringIO wrapper over the torrent string.
 
@@ -53,10 +55,11 @@ class TorrentParser(object):
 
         STR_LEN_VALUE_SEP = ':'
         INT_END = 'e'
-
-        def __init__(self, torr_str):
+        liberal = False
+        def __init__(self, torr_str, liberal=False):
             self.torr_str = StringIO(torr_str)
             self.curr_char = None
+            self.liberal = liberal
 
         def next_char(self):
             self.curr_char = self.torr_str.read(1) # to provide 2 ways of accessing the current parsed char - 1. as return value, 2. as self.curr_char (useful in some circumstances)
@@ -80,6 +83,8 @@ class TorrentParser(object):
             str_len = self._parse_number(delimiter=self.STR_LEN_VALUE_SEP)
 
             if not str_len:
+                if self.liberal:
+                    return ''
                 raise ParsingError('Empty string length found while parsing at position %d' % self.torr_str.pos)
 
             return self.torr_str.read(str_len)
@@ -122,7 +127,7 @@ class TorrentParser(object):
             return int(parsed_int)
 
 
-    def __init__(self, torrent_file_path):
+    def __init__(self, torrent_file_path, liberal=False):
         '''
         Reads the torrent file and sets the content as an object attribute.
 
@@ -135,12 +140,15 @@ class TorrentParser(object):
             IOError - when the string arg passed points to a non-existent file
 
         '''
-        if not os.path.exists(torrent_file_path):
-            raise IOError("No file found at '%s'" % torrent_file_path)
+        self.liberal = liberal
+        torrent_file_path = str(torrent_file_path)
+
+        if not torrent_file_path or not os.path.exists(torrent_file_path):
+            raise IOError("No file found at %r" % (torrent_file_path,))
 
         with open(torrent_file_path) as torr_file:
             torrent_content = torr_file.read()
-            self.torrent_str = self._TorrentStr(torrent_content)
+            self.torrent_str = self._TorrentStr(torrent_content, liberal)
 
         self.parsed_content = self._parse_torrent()
 

@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -e
+
+python tests/test_torrentparser.py
+
+pyflakes torrentparse tests
