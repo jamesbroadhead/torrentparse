@@ -141,7 +141,6 @@ class TorrentParser(object):
 
         '''
         self.liberal = liberal
-        torrent_file_path = str(torrent_file_path)
 
         if not torrent_file_path or not os.path.exists(torrent_file_path):
             raise IOError("No file found at %r" % (torrent_file_path,))

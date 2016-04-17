@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''
 Created on 2012-03-07
 
@@ -66,6 +67,11 @@ class TestTorrentParse(unittest.TestCase):
             tp = TorrentParser(os.path.join(self.test_data_dir, torrent_file))
             self.assertItemsEqual(tp.get_files_details(),
                                   TORRENTS_INFO[torrent_file]['file_details'])
+
+    def test_instantiation_accepts_unicode(self):
+        torrent_file = u'unicodé_filénamé.torrent'
+        TorrentParser(os.path.join(self.test_data_dir, torrent_file.encode('utf-8')))
+
 
 if __name__ == "__main__":
     unittest.main()
